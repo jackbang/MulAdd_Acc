@@ -1,0 +1,13 @@
+///////////////////////////////////////////////////////////
+// Author: Jackbang
+///////////////////////////////////////////////////////////
+
+module accelerator_FSM #(
+    parameter pipe_number = 16
+) (
+    input   clk     ,
+    input   rst_n   ,
+    input   acc_en_i,
+);
+    
+endmodule
