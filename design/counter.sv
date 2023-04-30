@@ -8,6 +8,7 @@ module counter #(
     input                   clk             ,
     input                   rst_n           ,
     input                   en_i            ,
+    input [WIDTH_CNT-1 : 0] clear_period_i  ,
     input [WIDTH_CNT-1 : 0] interrupt_num_i ,
     output                  ready_o
 );
@@ -20,13 +21,17 @@ always_ff @( posedge clk ) begin
         counter_r <= counter;
     end else begin
         // reset
-        counter_r <= 'b0;
+        counter_r <= -1;
     end   
 end
 
 always_comb begin
     if (en_i) begin
-        counter = counter_r + 1'b1;
+        if (counter_r == clear_period_i) begin
+            counter = 0;
+        end else begin
+            counter = counter_r + 1'b1; 
+        end
     end else begin
         counter = counter_r;
     end

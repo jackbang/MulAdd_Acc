@@ -24,12 +24,17 @@ module process_element #(
     input                       clk         ,
     input                       rst_n       ,
     input                       format_en_i ,
+    input                       keep_data_i ,
     input   [WIDTH_DATA-1 : 0]  data_a_i    ,
     input   [WIDTH_DATA-1 : 0]  data_b_i    ,
-    input   [WIDTH_MDATA-1 : 0] data_m_i    ,
-    output  [WIDTH_MDATA-1 : 0] data_m_o    ,
     output  [WIDTH_DATA-1 : 0]  data_o
 );
+
+///////////////////////////////////////////////////////////
+// local vars
+///////////////////////////////////////////////////////////
+logic   [WIDTH_MDATA-1 : 0] data_m_i    ;
+logic   [WIDTH_MDATA-1 : 0] data_m_o    ;
 
 ///////////////////////////////////////////////////////////
 // multiplier
@@ -47,15 +52,14 @@ fixedpoint_multiplier #(
     .data_o(mul_data_o)
 );
 
+assign mul_data_a_i = data_a_i;
+assign mul_data_b_i = data_b_i;
+
 always_ff @( posedge clk ) begin
     if (rst_n) begin
-        mul_data_a_i <= data_a_i;
-        mul_data_b_i <= data_b_i;
         mul_data_o_reg <= mul_data_o;
     end else begin
         // reset
-        mul_data_a_i <= 'b0;
-        mul_data_b_i <= 'b0;
         mul_data_o_reg <= 'b0;
     end   
 end
@@ -65,7 +69,7 @@ end
 ///////////////////////////////////////////////////////////
 logic   [WIDTH_MDATA - 1 : 0]   add_data_a_i;
 logic   [WIDTH_MDATA - 1 : 0]   add_data_b_i;
-logic   [WIDTH_MDATA - 1 : 0]   add_data_o, add_data_o_reg;
+logic   [WIDTH_MDATA - 1 : 0]   add_data_o, add_data_o_d1, add_data_o_d2;
 
 fixedpoint_adder #(
     .WIDTH_INPUT(WIDTH_MDATA),
@@ -81,10 +85,12 @@ assign add_data_b_i = data_m_i;
 
 always_ff @( posedge clk ) begin
     if (rst_n) begin
-        add_data_o_reg <= add_data_o;
+        add_data_o_d1 <= add_data_o;
+        add_data_o_d2 <= add_data_o_d1;
     end else begin
         // reset
-        add_data_o_reg <= 'b0;
+        add_data_o_d1 <= 'b0;
+        add_data_o_d2 <= 'b0;
     end   
 end
 
@@ -99,7 +105,7 @@ fixedpoint_formatter #(
     .WIDTH_INPUT(WIDTH_MDATA),
     .WIDTH_OUTPUT(WIDTH_DATA),
     .WIDTH_INTEGER(6),
-    .WIDTH_FRACTION(7)
+    .WIDTH_FRACTION(9)
 ) fixedpoint_formatter_inst (
     .data_i(fmt_data_i),
     .data_o(fmt_data_o)
@@ -107,7 +113,7 @@ fixedpoint_formatter #(
 
 always_comb begin
     if (fmt_en_i) begin
-        fmt_data_i = add_data_o_reg;
+        fmt_data_i = add_data_o_d1;
     end else begin
         fmt_data_i = 'b0;
     end
@@ -119,15 +125,17 @@ always_ff @( posedge clk ) begin
         fmt_data_o_reg <= fmt_data_o;
     end else begin
         // reset
-        fmt_en_i <= 'b0;
-        fmt_data_o_reg <= 'b0;
+        fmt_en_i <= 1'b0;
+        fmt_data_o_reg <= 16'b0;
     end   
 end
 
 ///////////////////////////////////////////////////////////
 // result
 ///////////////////////////////////////////////////////////
-assign data_m_o = add_data_o_reg;
+assign data_m_o = (keep_data_i) ? add_data_o_d2 : add_data_o_d1;
 assign data_o   = fmt_data_o_reg;
+
+assign data_m_i = (fmt_en_i) ? 'b0 : data_m_o;
     
 endmodule

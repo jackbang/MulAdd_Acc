@@ -1,4 +1,4 @@
-TOPMODULE=tb_counter
+TOPMODULE=tb_pe_top
 FILELIST=./filelist/project.f
 INCLUDE_DIR=/home/yangy/Course/EE216/FinalProject/deisgn/
 Mdir=./csrc
@@ -7,7 +7,7 @@ makeDirs= mkdir -p out log csrc
 vcsBaseCommand = vcs -full64 \
 					-sverilog \
 					+incdir+$(INCLUDE_DIR) \
-					-timescale=10ns/1ns \
+					-timescale=1ns/1ns \
 					-top $(TOPMODULE) \
 					-Mdir=$(Mdir) \
 					-kdb \
