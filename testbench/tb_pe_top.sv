@@ -11,7 +11,6 @@ logic [WIDTH_DATA-1 : 0]    v_bus_data_i    ;
 logic [WIDTH_DATA-1 : 0]    h_bus_data_i    ;
 logic [WIDTH_DATA-1 : 0]    top_data_i      ;
 logic [WIDTH_DATA-1 : 0]    bot_data_o      ;
-
 logic [1:0]                 wire_connection_i;
 
 pe_top #(
@@ -57,14 +56,14 @@ initial begin
     forever #5 clk = ~clk;
 end
 
-integer i;
+integer i = 0;
 
 assign sur_top_data_i = bot_data_o;
 
 initial begin
     rst_n = 0;
-    v_bus_data_i = 99;
-    h_bus_data_i = 99;
+    v_bus_data_i = 0;
+    h_bus_data_i = 0;
     top_data_i = 1;
     wire_connection_i = 3;
     sur_v_bus_data_i = 0;
@@ -78,43 +77,15 @@ initial begin
     sur_wire_connection_i = 0;
     #10;
     for (i = 1; i <= 16 ; i++ ) begin
+        #10;
         v_bus_data_i = i;
         h_bus_data_i = i;
-        #10;
         sur_v_bus_data_i = 2*i;
         sur_h_bus_data_i = 2*i;
         #10;
     end
     wire_connection_i = 3;
     sur_wire_connection_i = 3;
-    v_bus_data_i = 0;
-    h_bus_data_i = 0;
-    #10;
-    sur_v_bus_data_i = 0;
-    sur_h_bus_data_i = 0;
-    #10;
-
-    #10;
-
-    wire_connection_i = 1;
-    sur_wire_connection_i = 1;
-    h_bus_data_i = 20;
-    sur_h_bus_data_i = 20;
-    #10;
-
-    wire_connection_i = 2;
-    sur_wire_connection_i = 2;
-    #10;
-    for (i = 1; i <= 15 ; i++ ) begin
-        top_data_i = 2*i;
-        h_bus_data_i = i;
-        sur_h_bus_data_i = i;
-        #10;
-    end
-    wire_connection_i = 3;
-    sur_wire_connection_i = 3;
-    h_bus_data_i = 0;
-    sur_h_bus_data_i = 0;
     #30;
 
     wire_connection_i = 1;
@@ -126,6 +97,32 @@ initial begin
     wire_connection_i = 2;
     sur_wire_connection_i = 2;
     #10;
+    for (i = 1; i <= 14 ; i++ ) begin
+        top_data_i = 2*i;
+        h_bus_data_i = i;
+        sur_h_bus_data_i = i;
+        #10;
+    end
+    wire_connection_i = 3;
+    sur_wire_connection_i = 3;
+    top_data_i = 30;
+    h_bus_data_i = 15;
+    sur_h_bus_data_i = 15;
+    #10;
+    top_data_i = 0;
+    h_bus_data_i = 0;
+    sur_h_bus_data_i = 0;
+    #20;
+
+    wire_connection_i = 1;
+    sur_wire_connection_i = 1;
+    h_bus_data_i = 20;
+    sur_h_bus_data_i = 20;
+    #10;
+
+    wire_connection_i = 2;
+    sur_wire_connection_i = 2;
+    #10;
     for (i = 1; i <= 15 ; i++ ) begin
         top_data_i = 2*i;
         h_bus_data_i = i;
@@ -134,8 +131,6 @@ initial begin
     end
     wire_connection_i = 3;
     sur_wire_connection_i = 3;
-    h_bus_data_i = 0;
-    sur_h_bus_data_i = 0;
     #30;
     #1000;
     $finish;

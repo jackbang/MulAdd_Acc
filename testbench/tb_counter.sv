@@ -3,22 +3,18 @@ module tb_counter ();
 
 parameter WIDTH_CNT = 5;
 
-logic                   clk             ;
-logic                   rst_n           ;
-logic                   en_i            ;
-logic [WIDTH_CNT-1 : 0] clear_period_i  ;
-logic [WIDTH_CNT-1 : 0] interrupt_num_i ;
-logic                   ready_o         ;
+logic                       clk             ;
+logic                       cnt_rst_i       ;
+logic                       cnt_en_i        ;
+logic [WIDTH_CNT-1 : 0]     cnt_o           ;
 
 counter #(
     .WIDTH_CNT(WIDTH_CNT)
 ) counter_inst (
     .clk(clk),
-    .rst_n(rst_n),
-    .en_i(en_i),
-    .clear_period_i(clear_period_i),
-    .interrupt_num_i(interrupt_num_i),
-    .ready_o(ready_o)
+    .cnt_rst_i(cnt_rst_i),
+    .cnt_en_i(cnt_en_i),
+    .cnt_o(cnt_o)
 );
 
 initial begin
@@ -34,16 +30,16 @@ end
 integer i;
 
 initial begin
-    rst_n = 0;
-    en_i = 0;
-    clear_period_i = 0;
-    interrupt_num_i = 0;
+    cnt_rst_i = 1;
+    cnt_en_i = 0;
     #100;
-    rst_n = 1;
-    clear_period_i = 31;
-    interrupt_num_i = 2;
+    cnt_rst_i = 0;
     #10;
-    en_i = 1;
+    cnt_en_i = 1;
+    #100;
+    cnt_rst_i = 1;
+    #10;
+    cnt_rst_i = 0;
     #1000;
     $finish;
 end
