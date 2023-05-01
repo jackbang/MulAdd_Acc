@@ -1,4 +1,4 @@
-TOPMODULE=tb_pa_top
+TOPMODULE=tb_MulAdd_top
 FILELIST=./filelist/project.f
 INCLUDE_DIR=/home/yangy/Course/EE216/FinalProject/deisgn/
 Mdir=./csrc

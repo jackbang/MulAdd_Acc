@@ -6,6 +6,8 @@
 /home/yangy/Course/EE216/FinalProject/design/pe_top.sv
 /home/yangy/Course/EE216/FinalProject/design/accelerator_FSM.sv
 /home/yangy/Course/EE216/FinalProject/design/pa_top.sv
+/home/yangy/Course/EE216/FinalProject/design/shift_buffer.sv
+/home/yangy/Course/EE216/FinalProject/design/MulAdd_top.sv
 
 /home/yangy/Course/EE216/FinalProject/testbench/tb_fixedpoint_multiplier.sv
 /home/yangy/Course/EE216/FinalProject/testbench/tb_fixedpoint_formatter.sv
@@ -14,3 +16,5 @@
 /home/yangy/Course/EE216/FinalProject/testbench/tb_pe_top.sv
 /home/yangy/Course/EE216/FinalProject/testbench/tb_FSM.sv
 /home/yangy/Course/EE216/FinalProject/testbench/tb_pa_top.sv
+/home/yangy/Course/EE216/FinalProject/testbench/tb_shift_buffer.sv
+/home/yangy/Course/EE216/FinalProject/testbench/tb_MulAdd_top.sv
