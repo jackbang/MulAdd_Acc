@@ -14,7 +14,9 @@ module pa_top #(
     input                               data_rdy_i  ,
     input [SIZE_MAT*WIDTH_DATA-1 : 0]   v_bus_i     ,
     input [SIZE_MAT*WIDTH_DATA-1 : 0]   h_bus_i     ,
-    output                              read_en_o
+    output                              read_en_o   ,
+    output [WIDTH_MDATA-1:0]            pa_output_o ,
+    output                              pa_output_valid_o
 );
 
 ///////////////////////////////////////////////////////////
@@ -53,6 +55,7 @@ counter #(
 // accelerator finite state machine
 ///////////////////////////////////////////////////////////
 logic                           FSM_data_rdy_i      ;
+logic                           FSM_output_en_o     ;
 logic                           FSM_read_en_o       ;
 logic  [1:0]                    FSM_wire_connect_o  ;
 
@@ -69,6 +72,7 @@ accelerator_FSM #(
     .HCNT_en_o(hcnt_en_i),
     .HCNT_rst_o(hcnt_rst_i),
     .HCNT_data_i(hcnt_o),
+    .output_en_o(FSM_output_en_o),
     .read_en_o(FSM_read_en_o),
     .wire_connect_o(FSM_wire_connect_o)
 );
@@ -79,11 +83,11 @@ assign FSM_data_rdy_i = data_rdy_i;
 ///////////////////////////////////////////////////////////
 // processor array
 ///////////////////////////////////////////////////////////
+logic [SIZE_MAT*SIZE_MAT-1 : 0] [WIDTH_DATA-1 : 0] top2bot ;
 
 genvar w, h;
 generate
     for (w = 0; w < SIZE_MAT; w = w + 1) begin : PE_W
-        wire [WIDTH_DATA-1 : 0] top2bot [SIZE_MAT-1 : 0];
         for (h = 0; h < SIZE_MAT; h = h + 1) begin : PE_H
             if (h == 0) begin
                 pe_top #(
@@ -94,8 +98,9 @@ generate
                     .rst_n(rst_n),
                     .v_bus_data_i(v_bus_i[WIDTH_DATA*w +: WIDTH_DATA]),
                     .h_bus_data_i(h_bus_i[WIDTH_DATA*h +: WIDTH_DATA]),
-                    .top_data_i(top2bot[SIZE_MAT-1]),
-                    .bot_data_o(top2bot[h]),
+                    .top_data_i(top2bot[w*SIZE_MAT+SIZE_MAT-1]),
+                    .bot_data_o(top2bot[w*SIZE_MAT+h]),
+                    .output_en_i(FSM_output_en_o),
                     .wire_connection_i(FSM_wire_connect_o)
                 );
             end else begin
@@ -107,13 +112,48 @@ generate
                     .rst_n(rst_n),
                     .v_bus_data_i(v_bus_i[WIDTH_DATA*w +: WIDTH_DATA]),
                     .h_bus_data_i(h_bus_i[WIDTH_DATA*h +: WIDTH_DATA]),
-                    .top_data_i(top2bot[h-1]),
-                    .bot_data_o(top2bot[h]),
+                    .top_data_i(top2bot[w*SIZE_MAT+h-1]),
+                    .bot_data_o(top2bot[w*SIZE_MAT+h]),
+                    .output_en_i(FSM_output_en_o),
                     .wire_connection_i(FSM_wire_connect_o)
                 );
             end
         end
     end
 endgenerate
+
+///////////////////////////////////////////////////////////
+// output chain
+///////////////////////////////////////////////////////////
+logic output_en_d1, output_en_d2, pa_output_valid_r;
+logic [SIZE_MAT*SIZE_MAT-1 : 0] [WIDTH_DATA-1:0] output_reg_chain;
+logic [WIDTH_MDATA-1:0] pa_output_r;
+
+assign pa_output_o = pa_output_r;
+
+always_ff @( posedge clk ) begin
+    if (rst_n) begin
+        output_en_d1 <= FSM_output_en_o;
+        output_en_d2 <= output_en_d1;
+        pa_output_valid_r <= output_en_d2;
+        if (output_en_d1 && ~output_en_d2) begin
+            // write data chain
+            output_reg_chain <= top2bot;
+        end else if (output_en_d1 && output_en_d2) begin
+            // flow data chain
+            pa_output_r <= output_reg_chain[1:0];
+            output_reg_chain <= {32'b0, output_reg_chain[255:2]};
+        end
+    end else begin
+        pa_output_r <= 0;
+        output_reg_chain <= 0;
+        output_en_d1 <= 0;
+        output_en_d2 <= 0;
+        pa_output_valid_r <= 0;
+    end
+end
+
+assign pa_output_valid_o = pa_output_valid_r;
+
 
 endmodule

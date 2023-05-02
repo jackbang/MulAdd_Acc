@@ -19,6 +19,7 @@ module accelerator_FSM #(
     output                          HCNT_rst_o      ,
     input  [WIDTH_HBIT_CNT-1 : 0]   HCNT_data_i     ,
 
+    output                          output_en_o     ,
     output                          read_en_o       ,
     output [1:0]                    wire_connect_o
 );
@@ -88,6 +89,7 @@ logic                          LCNT_rst_o_r       ;
 logic                          HCNT_en_o_r        ;
 logic                          HCNT_rst_o_r       ;
 
+logic                          output_en_o_r      ;
 logic                          read_en_o_r        ;
 logic [1:0]                    wire_connect_o_r   ;
 
@@ -97,6 +99,7 @@ assign LCNT_rst_o = LCNT_rst_o_r;
 assign HCNT_en_o = HCNT_en_o_r;
 assign HCNT_rst_o = HCNT_rst_o_r;
 
+assign output_en_o = output_en_o_r;
 assign read_en_o = read_en_o_r;
 assign wire_connect_o = wire_connect_o_r;
 
@@ -123,6 +126,7 @@ always_comb begin
     HCNT_rst_o_r = 1;
     read_en_o_r = 0;
     wire_connect_o_r = 3;
+    output_en_o_r = 0;
     case (state_cur)
         IDLE : begin
             LCNT_en_o_r = 0;
@@ -185,6 +189,7 @@ always_comb begin
 
             read_en_o_r = 0;
             wire_connect_o_r = 3;
+            output_en_o_r = 1;
         end
     endcase
 end

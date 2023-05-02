@@ -21,7 +21,6 @@ module MulAdd_top (
 logic [31:0]    shift_buf_data_i      ;
 logic           shift_buf_wr_en_i     ;
 logic [255:0]   shift_buf_data_o      ;
-logic [255:0]   shift_buf_data_o_d1   ;
 logic           shift_buf_data_valid_o;
 
 shift_buffer shift_buffer_inst (
@@ -37,83 +36,80 @@ assign shift_buf_data_i = load_payload_i;
 assign shift_buf_wr_en_i = load_en_i;
 
 ///////////////////////////////////////////////////////////
-// handshake
+// clock syncer
 ///////////////////////////////////////////////////////////
-logic [3:0] delay_cnt, delay_cnt_reg;
-logic [2:0] d_cnt, d_cnt_reg;
-logic clk_data_ready, clk_pe_valid;
+logic           syncer_data_valid_i;
+logic  [255:0]  syncer_data_i;
+logic           syncer_data_valid_o;
+logic  [255:0]  syncer_data_o;
 
-always_ff @( posedge clk_data ) begin
-    if (rst_n) begin
-        d_cnt_reg <= d_cnt;
-        delay_cnt_reg <= delay_cnt;
-        if (shift_buf_data_valid_o) begin
-            clk_data_ready <= 1;
-        end
+clk_syncer clk_syncer_inst (
+    .clk_data(clk_data),
+    .clk_pe(clk_pe),
+    .rst_n(rst_n),
+    .data_valid_i(syncer_data_valid_i),
+    .data_i(syncer_data_i),
+    .data_valid_o(syncer_data_valid_o),
+    .data_o(syncer_data_o)
+);
 
-        if (d_cnt_reg == 3) begin
-            shift_buf_data_o_d1 <= shift_buf_data_o;
-        end
-    end else begin
-        // reset
-        d_cnt_reg <= 3'd0;
-        delay_cnt_reg <= 4'd0;
-        clk_data_ready <= 0;
-        shift_buf_data_o_d1 <= 0;
-    end   
-end
+assign syncer_data_valid_i = shift_buf_data_valid_o;
+assign syncer_data_i = shift_buf_data_o;
+
+///////////////////////////////////////////////////////////
+// processor array
+///////////////////////////////////////////////////////////
+parameter WIDTH_LBIT_CNT = 6;
+parameter WIDTH_HBIT_CNT = 3;
+parameter SIZE_MAT = 16;
+parameter WIDTH_DATA  = 16;
+parameter WIDTH_MDATA = 32;
+
+logic                               pe_data_rdy_i  ;
+logic [SIZE_MAT*WIDTH_DATA-1 : 0]   pe_v_bus_i     ;
+logic [SIZE_MAT*WIDTH_DATA-1 : 0]   pe_h_bus_i     ;
+logic [SIZE_MAT*WIDTH_DATA-1 : 0]   pe_v_bus_r     ;
+logic [SIZE_MAT*WIDTH_DATA-1 : 0]   pe_h_bus_r     ;
+logic                               pe_read_en_o   ;
+logic [WIDTH_MDATA-1:0]             pa_output_o    ;
+logic                               pa_output_valid_o;
+
+pa_top #(
+    .WIDTH_LBIT_CNT(WIDTH_LBIT_CNT),
+    .WIDTH_HBIT_CNT(WIDTH_HBIT_CNT),
+    .SIZE_MAT(SIZE_MAT),
+    .WIDTH_DATA(WIDTH_DATA),
+    .WIDTH_MDATA(WIDTH_MDATA)
+) pa_top_inst (
+    .clk(clk_pe),
+    .rst_n(rst_n),
+    .data_rdy_i(pe_data_rdy_i),
+    .v_bus_i(pe_v_bus_i),
+    .h_bus_i(pe_h_bus_i),
+    .read_en_o(pe_read_en_o),
+    .pa_output_o(pa_output_o),
+    .pa_output_valid_o(pa_output_valid_o)
+);
+
+assign pe_data_rdy_i = syncer_data_valid_o;
 
 always_ff @( posedge clk_pe ) begin
     if (rst_n) begin
-        if (clk_data_ready) begin
-            clk_pe_valid <= 1;
+        pe_h_bus_r <= syncer_data_o;
+        pe_v_bus_r <= pe_h_bus_r;  
+        if (pe_read_en_o) begin
+            pe_v_bus_i <= pe_v_bus_r;
+            pe_h_bus_i <= pe_h_bus_r;
         end
     end else begin
-        clk_pe_valid <= 0;
-    end   
+        pe_h_bus_r <= 0;
+        pe_v_bus_r <= 0;
+        pe_v_bus_i <= 0;
+        pe_h_bus_i <= 0;
+    end  
 end
 
-always_comb begin
-    // calculate the delay
-    if (clk_data_ready) begin
-        if (clk_pe_valid) begin
-            delay_cnt = delay_cnt_reg;
-        end else begin
-            delay_cnt = delay_cnt_reg + 1'b1;
-        end
-    end else begin
-        delay_cnt = delay_cnt_reg;
-    end
-
-    if (shift_buf_data_valid_o) begin
-        d_cnt = 0;
-    end else begin
-        d_cnt = d_cnt_reg + 1'b1;
-    end
-end
-
-///////////////////////////////////////////////////////////
-// slow clk get data
-///////////////////////////////////////////////////////////
-logic slow_clk_load_en;
-logic [255:0]   slow_clk_get_data ;
-
-always_ff @( posedge clk_pe ) begin
-    if (rst_n) begin
-        slow_clk_load_en <= load_en_i;
-        if ((delay_cnt_reg > 6) | (delay_cnt_reg < 2)) begin
-            if (slow_clk_load_en) begin
-                slow_clk_get_data <= shift_buf_data_o_d1; 
-            end
-        end else begin
-            if (load_en_i) begin
-                slow_clk_get_data <= shift_buf_data_o;
-            end
-        end
-    end else begin
-        slow_clk_load_en <= 0;
-        slow_clk_get_data <= 0;
-    end
-end
+assign result_valid_o = pa_output_valid_o;
+assign result_payload_o = pa_output_o;
     
 endmodule

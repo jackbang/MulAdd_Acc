@@ -14,6 +14,7 @@ module pe_top #(
     input [WIDTH_DATA-1 : 0]    top_data_i      ,
     output [WIDTH_DATA-1 : 0]   bot_data_o      ,
 
+    input                       output_en_i     ,
     input [1:0]                 wire_connection_i
 );
 
@@ -85,7 +86,7 @@ always_comb begin
     pe_keep_data_i = pe_keep_data_r;
     pe_data_a_i = pe_data_a_r;
     pe_data_b_i = pe_data_b_r;
-    bot_data_r = pe_data_a_r;
+    bot_data_r = (output_en_i) ? pe_data_o : pe_data_a_r;
     case (wire_connection_r)
         0 : begin
             pe_data_a_i = v_bus_data_i;
@@ -112,5 +113,10 @@ always_comb begin
         end
     endcase
 end
+
+///////////////////////////////////////////////////////////
+// output part
+///////////////////////////////////////////////////////////
+
     
 endmodule
