@@ -18,7 +18,8 @@ module fixedpoint_formatter #(
 logic frac_carry_bit;
 logic [WIDTH_INPUT - WIDTH_FRACTION : 0] rounded_data;
 
-assign frac_carry_bit = data_i[WIDTH_INPUT-1] ? (data_i[WIDTH_FRACTION-1] & (|data_i[0 +: WIDTH_FRACTION-1])) : data_i[WIDTH_FRACTION-1];
+// assign frac_carry_bit = data_i[WIDTH_INPUT-1] ? (data_i[WIDTH_FRACTION-1] & (|data_i[0 +: WIDTH_FRACTION-1])) : data_i[WIDTH_FRACTION-1];
+assign frac_carry_bit = data_i[WIDTH_FRACTION-1];
 // may optimize?
 assign rounded_data = {data_i[WIDTH_INPUT-1], data_i[WIDTH_INPUT-1 : WIDTH_FRACTION]} + frac_carry_bit;
 

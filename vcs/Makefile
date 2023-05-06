@@ -12,7 +12,6 @@ vcsBaseCommand = vcs -full64 \
 					-Mdir=$(Mdir) \
 					-kdb \
 					-debug_access+all \
-					+lint=all   \
 					-l ./log/compile.log \
 					-o ./out/simv \
 					-f $(FILELIST)
