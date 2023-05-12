@@ -41,8 +41,11 @@ logic [15:0] i, k,high,low;
 reg[255:0][15:0] Input = 0;
 reg[7:0][255:0][15:0] Weight = 0;
 
-logic [15:0] result_data;
+logic [255:0][15:0] result_data;
 logic [15:0] result_high, result_low;
+logic [31:0] check_data;
+
+logic result_equal;
 
 integer fd_read, fd_result;
 
@@ -76,7 +79,7 @@ initial begin
     #240;
     // the second level
     for (k = 0; k<256 ; k++) begin
-        $display("%b", Weight[1][k]);
+        //$display("%b", Weight[1][k]);
     end
 
 
@@ -145,12 +148,23 @@ initial begin
     #650;
     fd_result=$fopen("../testcase/Output.txt","r");
     for (k = 0; k<256 ; k++) begin
-        $fscanf(fd_result,"%b/n", result_data);
-        #20;
+        $fscanf(fd_result,"%b/n", result_data[k]);
+    end
+    #6;
+    for (k = 0; k<16 ; k++) begin
+        for (i = 0; i<8 ; i++ ) begin
+            check_data[15:0] = result_data[2*i*16+k];
+            check_data[31:16] = result_data[(2*i+1)*16+k];
+            #80;
+        end
     end
     #10000;
     $fclose(fd_result);
     $finish;
+end
+
+always_comb begin 
+    result_equal = result_payload_o == check_data;
 end
 
 initial begin

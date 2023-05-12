@@ -1,6 +1,6 @@
 TOPMODULE=tb_MulAdd_top
 FILELIST=./filelist/project.f
-INCLUDE_DIR=/home/yangy/Course/EE216/FinalProject/deisgn/
+INCLUDE_DIR=/home/public/workspace/EE218/FinalProject/design/
 Mdir=./csrc
 makeDirs= mkdir -p out log csrc
 
