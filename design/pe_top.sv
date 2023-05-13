@@ -74,11 +74,25 @@ end
 ///////////////////////////////////////////////////////////
 logic [WIDTH_DATA-1 : 0]   bot_data_r;
 logic [1:0] wire_connection_r;
+logic output_en_d1, output_en_d2;
+logic [WIDTH_DATA-1 : 0]   pe_data_r;
 
 assign bot_data_o = bot_data_r;
 
 always_ff @( posedge clk ) begin
-    wire_connection_r <= wire_connection_i;
+    if (rst_n) begin
+        wire_connection_r <= wire_connection_i;
+        output_en_d1 <= output_en_i;
+        output_en_d2 <= output_en_d1;
+        if (output_en_d1 ^ output_en_d2) begin
+            pe_data_r <= pe_data_o;
+        end
+    end else begin
+        wire_connection_r <= 'b0;
+        output_en_d1 <= 1'b0;
+        output_en_d2 <= 1'b0;
+        pe_data_r <= 'b0;
+    end
 end
 
 always_comb begin
@@ -86,7 +100,7 @@ always_comb begin
     pe_keep_data_i = pe_keep_data_r;
     pe_data_a_i = pe_data_a_r;
     pe_data_b_i = pe_data_b_r;
-    bot_data_r = (output_en_i) ? pe_data_o : pe_data_a_r;
+    bot_data_r = (output_en_i) ? pe_data_r : pe_data_a_r;
     case (wire_connection_r)
         0 : begin
             pe_data_a_i = v_bus_data_i;

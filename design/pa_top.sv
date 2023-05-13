@@ -40,7 +40,7 @@ counter #(
 ///////////////////////////////////////////////////////////
 logic                           hcnt_rst_i      ;
 logic                           hcnt_en_i       ;
-logic [WIDTH_LBIT_CNT-1 : 0]    hcnt_o          ;
+logic [WIDTH_HBIT_CNT-1 : 0]    hcnt_o          ;
 
 counter #(
     .WIDTH_CNT(WIDTH_HBIT_CNT)
@@ -126,30 +126,28 @@ endgenerate
 // output chain
 ///////////////////////////////////////////////////////////
 logic output_en_d1, output_en_d2, pa_output_valid_r;
-logic [SIZE_MAT*SIZE_MAT-1 : 0] [WIDTH_DATA-1:0] output_reg_chain;
+logic [7:0] output_cnt_r;
+logic [7:0] shift_output_cnt_r; 
 logic [WIDTH_MDATA-1:0] pa_output_r;
 
 assign pa_output_o = pa_output_r;
+assign shift_output_cnt_r = output_cnt_r << 1;
 
 always_ff @( posedge clk ) begin
     if (rst_n) begin
         output_en_d1 <= FSM_output_en_o;
-        output_en_d2 <= output_en_d1;
+        output_en_d2 <= output_en_d1 && (output_cnt_r < 8'd127);
         pa_output_valid_r <= output_en_d2;
-        if (output_en_d1 && ~output_en_d2) begin
-            // write data chain
-            output_reg_chain <= top2bot;
-        end else if (output_en_d1 && output_en_d2) begin
-            // flow data chain
-            pa_output_r <= output_reg_chain[1:0];
-            output_reg_chain <= {32'b0, output_reg_chain[255:2]};
+        if (output_en_d2) begin
+            output_cnt_r <= output_cnt_r + 1'b1;
+            pa_output_r <= top2bot[shift_output_cnt_r +: 2];
         end
     end else begin
         pa_output_r <= 0;
-        output_reg_chain <= 0;
         output_en_d1 <= 0;
         output_en_d2 <= 0;
         pa_output_valid_r <= 0;
+        output_cnt_r <= 8'b0;
     end
 end
 
