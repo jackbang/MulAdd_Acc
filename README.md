@@ -10,10 +10,10 @@ TODO.
 
 ## vcs result:
 
-![vcs_result](pics/vcs_result.png)
+![vcs_result](./pics/vcs_result.png)
 
 ## post dc synthesis vcs result:
 
-![post_syn_vcs_result](pics/post_syn_vcs_result.png)
+![post_syn_vcs_result](./pics/post_syn_vcs_result.png)
 
-![post_syn_vcs_result_detail](pics/post_syn_vcs_result_detail.jpg)
+![post_syn_vcs_result_detail](./pics/post_syn_vcs_result_detail.jpg)
