@@ -1,0 +1,11 @@
+../design/fixedpoint_multiplier.sv
+../design/fixedpoint_adder.sv
+../design/fixedpoint_formatter.sv
+../design/process_element.sv
+../design/counter.sv
+../design/pe_top.sv
+../design/accelerator_FSM.sv
+../design/pa_top.sv
+../design/shift_buffer.sv
+../design/MulAdd_top.sv
+../design/clk_syncer.sv

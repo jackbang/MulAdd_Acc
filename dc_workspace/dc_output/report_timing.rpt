@@ -1,0 +1,162 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : MulAdd_top
+Version: R-2020.09-SP5-3
+Date   : Mon May 15 11:32:10 2023
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: TT   Library: ih55lp_hs_rvt_tt_1p20_25c_basic
+Wire Load Model Mode: top
+
+  Startpoint: shift_buffer_inst/cnt_reg_reg[0]
+              (rising edge-triggered flip-flop clocked by clk_data)
+  Endpoint: shift_buffer_inst/data_o_r_reg[255]
+            (rising edge-triggered flip-flop clocked by clk_data)
+  Path Group: clk_data
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk_data (rise edge)                              0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  shift_buffer_inst/cnt_reg_reg[0]/CK (HSR_DQ_2)          0.00       0.50 r
+  shift_buffer_inst/cnt_reg_reg[0]/Q (HSR_DQ_2)           0.12       0.62 r
+  shift_buffer_inst/U811/ZN (HSR_CLKN_2)                  0.03       0.65 f
+  shift_buffer_inst/U45/ZN (HSR_NOR4_1)                   0.09       0.74 r
+  shift_buffer_inst/U44/ZN (HSR_INAND2_1)                 0.07       0.81 r
+  shift_buffer_inst/U810/ZN (HSR_CLKN_2)                  0.20       1.01 f
+  shift_buffer_inst/U122/Z (HSR_BUF_2)                    0.21       1.22 f
+  shift_buffer_inst/U115/Z (HSR_BUF_2)                    0.17       1.38 f
+  shift_buffer_inst/U113/Z (HSR_BUF_2)                    0.19       1.57 f
+  shift_buffer_inst/U3/ZN (HSR_AOI22_2)                   0.08       1.65 r
+  shift_buffer_inst/U553/ZN (HSR_CLKN_2)                  0.02       1.67 f
+  shift_buffer_inst/data_o_r_reg[255]/D (HSR_DQ_2)        0.00       1.67 f
+  data arrival time                                                  1.67
+
+  clock clk_data (rise edge)                              2.00       2.00
+  clock network delay (ideal)                             0.50       2.50
+  clock uncertainty                                      -0.30       2.20
+  shift_buffer_inst/data_o_r_reg[255]/CK (HSR_DQ_2)       0.00       2.20 r
+  library setup time                                     -0.02       2.18
+  data required time                                                 2.18
+  --------------------------------------------------------------------------
+  data required time                                                 2.18
+  data arrival time                                                 -1.67
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.51
+
+
+  Startpoint: pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fmt_en_i_reg
+              (rising edge-triggered flip-flop clocked by clk_pe)
+  Endpoint: pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/add_data_o_d1_reg[31]
+            (rising edge-triggered flip-flop clocked by clk_pe)
+  Path Group: clk_pe
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk_pe (rise edge)                                0.00       0.00
+  clock network delay (ideal)                             4.00       4.00
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fmt_en_i_reg/CK (HSR_DX_0)
+                                                          0.00 #     4.00 r
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fmt_en_i_reg/QN (HSR_DX_0)
+                                                          0.42       4.42 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/U117/ZN (HSR_INAND2_1)
+                                                          0.36       4.78 r
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/U171/ZN (HSR_IOA22_0)
+                                                          0.09       4.87 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/data_b_i[1] (fixedpoint_adder_WIDTH_INPUT32_WIDTH_OUTPUT32_254)
+                                                          0.00       4.87 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/B[1] (fixedpoint_adder_WIDTH_INPUT32_WIDTH_OUTPUT32_254_DW01_add_0_DW01_add_509)
+                                                          0.00       4.87 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_1/CO (HSR_AD1_0)
+                                                          0.17       5.04 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_2/CO (HSR_AD1_0)
+                                                          0.09       5.12 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_3/CO (HSR_AD1_0)
+                                                          0.09       5.21 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_4/CO (HSR_AD1_0)
+                                                          0.09       5.29 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_5/CO (HSR_AD1_0)
+                                                          0.09       5.38 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_6/CO (HSR_AD1_0)
+                                                          0.09       5.46 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_7/CO (HSR_AD1_0)
+                                                          0.09       5.55 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_8/CO (HSR_AD1_0)
+                                                          0.09       5.64 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_9/CO (HSR_AD1_0)
+                                                          0.09       5.72 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_10/CO (HSR_AD1_0)
+                                                          0.09       5.81 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_11/CO (HSR_AD1_0)
+                                                          0.09       5.89 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_12/CO (HSR_AD1_0)
+                                                          0.09       5.98 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_13/CO (HSR_AD1_0)
+                                                          0.09       6.06 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_14/CO (HSR_AD1_0)
+                                                          0.09       6.15 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_15/CO (HSR_AD1_0)
+                                                          0.09       6.23 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_16/CO (HSR_AD1_0)
+                                                          0.09       6.32 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_17/CO (HSR_AD1_0)
+                                                          0.09       6.40 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_18/CO (HSR_AD1_0)
+                                                          0.09       6.49 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_19/CO (HSR_AD1_0)
+                                                          0.09       6.57 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_20/CO (HSR_AD1_0)
+                                                          0.09       6.66 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_21/CO (HSR_AD1_0)
+                                                          0.09       6.74 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_22/CO (HSR_AD1_0)
+                                                          0.09       6.83 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_23/CO (HSR_AD1_0)
+                                                          0.09       6.91 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_24/CO (HSR_AD1_0)
+                                                          0.09       7.00 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_25/CO (HSR_AD1_0)
+                                                          0.09       7.08 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_26/CO (HSR_AD1_0)
+                                                          0.09       7.17 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_27/CO (HSR_AD1_0)
+                                                          0.09       7.25 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_28/CO (HSR_AD1_0)
+                                                          0.09       7.34 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_29/CO (HSR_AD1_0)
+                                                          0.09       7.42 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_30/CO (HSR_AD1_0)
+                                                          0.08       7.50 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/U1_31/Z (HSR_XOR3_2)
+                                                          0.05       7.56 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/add_39/SUM[31] (fixedpoint_adder_WIDTH_INPUT32_WIDTH_OUTPUT32_254_DW01_add_0_DW01_add_509)
+                                                          0.00       7.56 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/fixedpoint_adder_inst/data_o[31] (fixedpoint_adder_WIDTH_INPUT32_WIDTH_OUTPUT32_254)
+                                                          0.00       7.56 f
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/add_data_o_d1_reg[31]/SA (HSR_DX_0)
+                                                          0.00       7.56 f
+  data arrival time                                                  7.56
+
+  clock clk_pe (rise edge)                               16.00      16.00
+  clock network delay (ideal)                             4.00      20.00
+  clock uncertainty                                      -2.40      17.60
+  pa_top_inst/PE_W[0].PE_H[1].genblk1.pe_top_inst/process_element_inst/add_data_o_d1_reg[31]/CK (HSR_DX_0)
+                                                          0.00      17.60 r
+  library setup time                                     -0.07      17.53
+  data required time                                                17.53
+  --------------------------------------------------------------------------
+  data required time                                                17.53
+  data arrival time                                                 -7.56
+  --------------------------------------------------------------------------
+  slack (MET)                                                        9.97
+
+
+1

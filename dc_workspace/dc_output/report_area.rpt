@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : MulAdd_top
+Version: R-2020.09-SP5-3
+Date   : Mon May 15 11:32:10 2023
+****************************************
+
+Library(s) Used:
+
+    ih55lp_hs_rvt_tt_1p20_25c_basic (File: /home/public/EE218_PDK/data/PDK/synopsys/ih55lp_hs_rvt_tt_1p20_25c_basic.db)
+
+Number of ports:                       162502
+Number of nets:                        458094
+Number of cells:                       283590
+Number of combinational cells:         236929
+Number of sequential cells:             44606
+Number of macros/black boxes:               0
+Number of buf/inv:                      27833
+Number of references:                      11
+
+Combinational area:             976075.584329
+Buf/Inv area:                    30426.481209
+Noncombinational area:          399356.274804
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:               1375431.859134
+Total area:                 undefined
+1

@@ -1,0 +1,53 @@
+# Set Designer
+set company {ShanghaiTech}
+
+# Set File Direction
+set my_lib_path "/home/public/EE218_PDK/data/PDK/synopsys/ /home/public/EE218_PDK/data/PDK/symbol/ /home/public/EE218_PDK/data/ccs_db/ /home/public/EE218_PDK/data/memHLMC/compout/views/mem55lpw128d16sp/ss1p08v125c/"
+set search_path "$search_path $my_lib_path"
+
+set design_dw_lib /opt/eda/synopsys/designcompiler/R-2020.09-SP5-3/libraries/syn/dw_foundation.sldb
+
+# Define the target logic library, symbol library and link library
+set_app_var target_library  "ih55lp_hs_rvt_tt_1p20_25c_basic.db "
+set_app_var link_library "* ih55lp_hs_rvt_tt_1p20_25c_basic.db $design_dw_lib"
+set_app_var synthetic_library  "ih55lp_hs_rvt_tt_1p20_25c_basic.db $design_dw_lib"
+set_app_var symbol_library "IH55LP_HS_RVT.sdb"
+# Synopsys Lib
+#
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#  History
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# history keep 200
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#  Aliases
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+alias h history
+alias rc "report_constraint -all_violators"
+alias rt report_timing
+alias ra report_area
+alias rq report_qor
+alias page_on {set sh_enable_page_mode true}
+alias page_off {set sh_enable_page_mode false}
+alias fr "remove_design -designs"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Verify Settings
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+echo "\n=================================================================="
+echo "\nLibrary Settings:"
+echo "search_path:             $search_path"
+echo "link_library:            $link_library"
+echo "target_library:          $target_library"
+echo "symbol_library:          $symbol_library"
+echo "\n=================================================================="
+
+echo "\nI am ready...\n"
+
+
