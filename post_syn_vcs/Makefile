@@ -12,6 +12,7 @@ vcsBaseCommand = vcs -full64 \
 					-Mdir=$(Mdir) \
 					-kdb \
 					-debug_access+all \
+                                        +neg_tchk -negdelay \
 					-v /home/public/EE218_PDK/data/PDK/verilog/*.v \
 					-l ./log/compile.log \
 					-o ./out/simv \

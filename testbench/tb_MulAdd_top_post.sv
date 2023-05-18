@@ -24,17 +24,17 @@ MulAdd_top MulAdd_top_inst (
 
 initial begin
     clk_data = 0;
-    forever #5 clk_data = ~clk_data;
+    forever #1 clk_data = ~clk_data;
 end
 
 initial begin
     clk_pe = 0;
-    #5;
+    #1;
     clk_pe = 1;
-    #5;
+    #1;
     clk_pe = 0;
-    #76;
-    forever #40 clk_pe = ~clk_pe;
+    #10;
+    forever #8 clk_pe = ~clk_pe;
 end
 
 logic [15:0] i, k,high,low;
@@ -60,9 +60,9 @@ initial begin
     rst_n = 0;
     load_payload_i = 0;
     load_en_i = 0;
-    #100;
+    #20;
     rst_n = 1;
-    #10;
+    #2;
     load_en_i = 1;
     for (k = 0; k<32 ; k++) begin
         // k even Input row
@@ -73,10 +73,10 @@ initial begin
             end else begin 
                 load_payload_i = {Weight[0][(17-2*i)*16+(k-1)/2], Weight[0][(16-2*i)*16+(k-1)/2]};
             end
-            #10;
+            #2;
         end
     end
-    #240;
+    #48;
     // the second level
     for (k = 0; k<256 ; k++) begin
         //$display("%b", Weight[1][k]);
@@ -88,74 +88,74 @@ initial begin
             high=(k+2*i-2)%16;
             low=(k+2*i-1)%16;
             load_payload_i = {Weight[1][(18-2*i)*16-high-1], Weight[1][(17-2*i)*16-low-1]};
-            #10;
+            #2;
         end
     end
-    #240;
+    #48;
     for (k = 0; k<16 ; k++) begin
         for (i = 1; i<9 ; i++ ) begin
             high=(k+2*i-2)%16;
             low=(k+2*i-1)%16;
             load_payload_i = {Weight[2][(18-2*i)*16-high-1], Weight[2][(17-2*i)*16-low-1]};
-            #10;
+            #2;
         end
     end
-    #240;
+    #48;
     for (k = 0; k<16 ; k++) begin
         for (i = 1; i<9 ; i++ ) begin
             high=(k+2*i-2)%16;
             low=(k+2*i-1)%16;
             load_payload_i = {Weight[3][(18-2*i)*16-high-1], Weight[3][(17-2*i)*16-low-1]};
-            #10;
+            #2;
         end
     end
-    #240;
+    #48;
     for (k = 0; k<16 ; k++) begin
         for (i = 1; i<9 ; i++ ) begin
             high=(k+2*i-2)%16;
             low=(k+2*i-1)%16;
             load_payload_i = {Weight[4][(18-2*i)*16-high-1], Weight[4][(17-2*i)*16-low-1]};
-            #10;
+            #2;
         end
     end
-    #240;
+    #48;
     for (k = 0; k<16 ; k++) begin
         for (i = 1; i<9 ; i++ ) begin
             high=(k+2*i-2)%16;
             low=(k+2*i-1)%16;
             load_payload_i = {Weight[5][(18-2*i)*16-high-1], Weight[5][(17-2*i)*16-low-1]};
-            #10;
+            #2;
         end
     end
-    #240;
+    #48;
     for (k = 0; k<16 ; k++) begin
         for (i = 1; i<9 ; i++ ) begin
             high=(k+2*i-2)%16;
             low=(k+2*i-1)%16;
             load_payload_i = {Weight[6][(18-2*i)*16-high-1], Weight[6][(17-2*i)*16-low-1]};
-            #10;
+            #2;
         end
     end
-    #240;
+    #48;
     for (k = 0; k<16 ; k++) begin
         for (i = 1; i<9 ; i++ ) begin
             high=(k+2*i-2)%16;
             low=(k+2*i-1)%16;
             load_payload_i = {Weight[7][(18-2*i)*16-high-1], Weight[7][(17-2*i)*16-low-1]};
-            #10;
+            #2;
         end
     end
-    #650;
+    #130;
     fd_result=$fopen("../testcase/Output.txt","r");
     for (k = 0; k<256 ; k++) begin
         $fscanf(fd_result,"%b/n", result_data[k]);
     end
-    #6;
+    #20;
     for (k = 0; k<16 ; k++) begin
         for (i = 0; i<8 ; i++ ) begin
             check_data[15:0] = result_data[2*i*16+k];
             check_data[31:16] = result_data[(2*i+1)*16+k];
-            #80;
+            #16;
         end
     end
     #10000;
@@ -163,8 +163,12 @@ initial begin
     $finish;
 end
 
-always_comb begin 
-    result_equal = result_payload_o == check_data;
+logic same_result;
+
+assign same_result = result_payload_o == check_data;
+
+always_ff@(posedge clk_pe) begin 
+    result_equal <= same_result & result_valid_o;
 end
 
 initial begin
@@ -198,7 +202,7 @@ function integer readOneRow(logic IorW);
 endfunction
 
 initial begin
-    $sdf_annotate("/home/yangy/Workspace/FinalProject/dc_workspace/dc_output/MulAdd_top.sdf", MulAdd_top);
+    $sdf_annotate("/home/public/workspace/EE218/FinalProjectSyn/FinalProject/dc_workspace/dc_output/MulAdd_top.sdf", MulAdd_top);
 end
 
 endmodule
